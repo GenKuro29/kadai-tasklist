@@ -6,6 +6,7 @@
     </head>
     
     <body>
+        <p> {{ link_to_route('tasks.index', 'タスク一覧')  }}</p>
         @yield('content')
     </body>
 </html>
