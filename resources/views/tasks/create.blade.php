@@ -7,7 +7,20 @@
     {!! Form::model($task, ['route' => 'tasks.store']) !!}
     
         {!! Form::Label('content', 'タスク:') !!}
-        {!! Form::text('content') !!}
+        {!! Form::text('content') !!}<br>
+        
+        {!! Form::Label('status', 'ステータス:') !!}
+
+        
+        {!! Form::select('status',[
+            'open' => 'open',
+            'ongoing' => 'ongoing',
+            'completed' => 'completed',
+            'invalid' => 'invalid']
+        ) !!}<br>
+        
+        
+        
         {!! Form::submit('作成') !!}
         
         
