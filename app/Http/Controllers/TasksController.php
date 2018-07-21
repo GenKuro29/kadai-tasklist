@@ -15,11 +15,28 @@ class TasksController extends Controller
      */
     public function index()
     {
-        $task = Task::all();    //全てのデータを取得
-        
-        return view('tasks.index', [
-            'tasks' => $task,
-            ]);
+//　ログインユーザのタスクのみを表示
+
+        if (\Auth::check()){
+            $data = [];
+            $user = \Auth::user();
+            $tasks = $user->tasks()->orderBy('id', 'asc')->paginate(10);
+            
+            $data = [
+                'user' => $user,
+                'tasks' => $tasks,
+            ];
+            return view('tasks.index', $data);
+/*作成者に関係なしに表示していたケース
+            $tasks = Task::all();    //全てのデータを取得
+            
+            return view('tasks.index', [
+                'tasks' => $tasks,
+                ]);
+*/
+        }else{
+            return view('welcome');
+        }
     }
 
     /**
@@ -49,11 +66,16 @@ class TasksController extends Controller
              'status' => 'required|max:10',
         ]);
         
-        
+        $request->user()->tasks()->create([
+            'content' => $request->content,
+            'status' => $request->status,
+        ]);
+        /*
         $task = new Task;
         $task->content = $request->content;
         $task->status = $request->status;
         $task->save();
+        */
         
         return redirect('/');
     }
@@ -65,12 +87,15 @@ class TasksController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        $task = Task::find($id);
-        
+    {$task = Task::find($id);
+        if (\Auth::id() == $task->user_id ){
+
         return view ('tasks.show', [
             'task' => $task,
             ]);
+        }else{
+            return redirect('/');
+        }
     }
 
     /**
